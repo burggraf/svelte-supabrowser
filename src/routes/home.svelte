@@ -12,7 +12,7 @@ import type { IonSelect } from "@ionic/core/components";
 
     // $:folder = $params.folder;
     const boot = $params.boot;
-
+    let read_file_name = "";
     const xionViewWillEnter = () => {
         console.log("Page:ionViewWillEnter");
     };
@@ -270,8 +270,9 @@ import type { IonSelect } from "@ionic/core/components";
                 }
             }
 
-            emulator.read_file = async () => {
-                const path = document.getElementById("read_file_name").value;
+            emulator.download_file = async () => {
+                console.log('read_file_name', read_file_name)
+                const path = read_file_name; //document.getElementById("read_file_name").value;
                 const contents = await emulator.read_file(path);
                 const filename = ('/' + path).split('/').pop();
                 var a = document.createElement("a");
@@ -364,6 +365,10 @@ import type { IonSelect } from "@ionic/core/components";
             // console.log("hello,world".charCodeAt(0))
             // document.getElementById("textarea").value = "";
         }
+        const change_read_file = (e: any) => {
+            console.log('change_read_file', e);
+            read_file_name = e.detail.value;
+        }
 
 </script>
   
@@ -387,8 +392,11 @@ import type { IonSelect } from "@ionic/core/components";
     <hr />
     <div style="clear: both;">
         <!-- <input id="save_restore" type="button" value="Save state"> -->
-        <input id="save_file" type="button" value="Save state to file:">
-        <input type="text" id="save_filename" value="" placeholder="enter filename">
+        <ion-button on:click={emulator.save_file}>
+            Save state to file
+        </ion-button>
+
+        <ion-input style={'width: 160px;'} type="text" id="save_filename" value="state.bin" placeholder="enter filename"></ion-input>
         &nbsp;&nbsp;
 
         <ion-button on:click={emulator.restore_file}>
@@ -439,13 +447,18 @@ import type { IonSelect } from "@ionic/core/components";
 
         &nbsp;&nbsp;
 
-        <button style="display:inline;width:110px; height:20px;" id="read_file">
-            Download file
-        </button>
-        <input type="text" id="read_file_name" value="" placeholder="enter path to file">
-        <br /><hr />
+
+        <ion-button on:click={emulator.download_file}>
+        Download file
+        </ion-button>
+
+        <ion-input type="text" 
+        on:ionChange={change_read_file}
+        id="read_file_name" 
+        value="" placeholder="enter path to file"></ion-input>
+        <!-- <br /><hr />
         <textarea id="textarea" cols="55" rows="10" style="width: 100%"></textarea><br>
-        <button onclick="sendText()">Send Text</button>
+        <button onclick="sendText()">Send Text</button> -->
     </div>
 </ion-content>
 </IonPage>
@@ -453,5 +466,8 @@ import type { IonSelect } from "@ionic/core/components";
     ion-menu-button {
       color: var(--ion-color-primary);
     }  
+    ion-input {
+        border: 1px solid;
+    }
   </style>
   
