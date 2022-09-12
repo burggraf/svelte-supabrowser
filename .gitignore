@@ -1,5 +1,3 @@
-src/static/filesystem
-src/static/state
 # Logs
 logs
 *.log

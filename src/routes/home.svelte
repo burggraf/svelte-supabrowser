@@ -1,6 +1,7 @@
 <script lang="ts">
+
     import IonPage from "$ionic/svelte/components/IonPage.svelte";
-    import { params } from "@roxi/routify";
+    import { params, goto } from "@roxi/routify";
     import "https://unpkg.com/xterm@4.19.0/lib/xterm.js";
 
     import "$lib/libv86.js";
@@ -10,6 +11,7 @@ import type { IonSelect } from "@ionic/core/components";
     // import "$lib/idb-storage.min.js"
 
     // $:folder = $params.folder;
+    const boot = $params.boot;
 
     const xionViewWillEnter = () => {
         console.log("Page:ionViewWillEnter");
@@ -72,7 +74,6 @@ import type { IonSelect } from "@ionic/core/components";
             // get searchParams
             const params = new URLSearchParams(window.location.search);
             // const params = (new URL(document.location)).searchParams;
-            const boot = params.get("boot") === "true";
 
             if (boot) {
                 (document.getElementById("screen_container") as any).style = 'display:block';
@@ -322,11 +323,14 @@ import type { IonSelect } from "@ionic/core/components";
                 }
                 localStorage.setItem('config', JSON.stringify(config));
                 // get current url of window
-                let url = window.location.origin;
+                let url = "/home"; //window.location.origin;
                 if (fullboot) {
                     url += '?boot=true';
                 }
-                window.location = url;
+                window.location.href = url;
+                // $goto("/home", { boot: fullboot });
+
+                // window.location = url;
             } catch (e) {
                 console.log('updateMemorySize error', e);
             }

@@ -12,7 +12,7 @@
   ];
 
   const goMenuItem = (page) => {
-    $goto(page.url, { data: "some data" });
+    $goto(page.url, {  });
     menuController.close("mainmenu");
   };
 
