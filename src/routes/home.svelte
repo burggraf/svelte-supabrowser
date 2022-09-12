@@ -34,7 +34,7 @@ import type { IonSelect } from "@ionic/core/components";
             try {
                 if (saved_config) {
                     config = JSON.parse(saved_config);
-                    console.log('config loaded from localStorage', config);
+                    console.log('config loaded from localStorage', config);                    
                 }
             } catch (err) {
                 console.error('error restoring config from localStorage', err);
@@ -48,8 +48,8 @@ import type { IonSelect } from "@ionic/core/components";
             // console.log('0002');
             
 
-            // (document.getElementById("fontsize") as any).value = config.font_size;
-            // (document.getElementById("save_filename") as any).value = config.save_filename || "state.bin";
+            (document.getElementById("fontsize") as any).value = config.font_size;
+            (document.getElementById("save_filename") as any).value = config.save_filename || "state.bin";
             console.log('0003')
             console.log('screen_container', document.getElementById("screen_container"))
             console.log('terminal', document.getElementById("terminal"))
@@ -289,20 +289,10 @@ import type { IonSelect } from "@ionic/core/components";
 
         function updateFontSize() {
             console.log('updateFontSize');
-            return;
             console.log('emulator', emulator);
             console.log('emulator.serial_adapter', emulator.serial_adapter);
             console.log('FONT SIZE WAS', emulator.serial_adapter.term.options.fontSize);
             //emulator.screen_adapter.set_size_text(document.getElementById("font_size").value, document.getElementById("font_size").value);
-            try {
-                config.font_size = parseInt(document.getElementById("fontsize").value, 10) || 14;
-                if (config.font_size < 4 || config.font_size > 90) {
-                    config.font_size = 15;
-                }
-            } catch (err) {
-                console.log('error parsing font size', err);
-                config.font_size = 15;
-            }
             emulator.serial_adapter.term.options.fontSize = config.font_size;
             if (emulator.serial_adapter.term.element && emulator.serial_adapter.term.element.children[0]) {
                 //emulator.serial_adapter.term.element.children[0].style.width = 0;
@@ -314,7 +304,7 @@ import type { IonSelect } from "@ionic/core/components";
         }
 
         function updateMemorySize() {
-            const fullboot = document.getElementById("fullboot").checked;
+            const fullboot = (document.getElementById("fullboot") as any).checked;
             const newMemorySize = document.getElementById("memorysize").value;
             try {
                 config.memory_size = parseInt(newMemorySize, 10) || 128;
@@ -369,6 +359,18 @@ import type { IonSelect } from "@ionic/core/components";
             console.log('change_read_file', e);
             read_file_name = e.detail.value;
         }
+        const change_font_size = (e: any) => {
+            console.log('change_font_size', e);
+            try {
+                config.font_size = parseInt(e.detail.value, 10) || 14;
+                if (config.font_size < 4 || config.font_size > 90) {
+                    config.font_size = 15;
+                }
+            } catch (err) {
+                console.log('error parsing font size', err);
+                config.font_size = 15;
+            }
+        }
 
 </script>
   
@@ -416,7 +418,10 @@ import type { IonSelect } from "@ionic/core/components";
         </ion-button>
 
         <br />
-        <ion-input type="text" id="fontsize" value="15" min="4" max="40" style="width: 25px" />&nbsp;&nbsp;
+        <ion-input type="text" 
+        id="fontsize" value="15" min="4" 
+        on:ionChange={change_font_size}
+        max="40" style="width: 50px" />&nbsp;&nbsp;
         <ion-button
             on:click={updateFontSize}>
             Update font size
